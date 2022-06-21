@@ -26,10 +26,10 @@ void List::insertRow(Node temp){
     listNode.push_back(temp);
 }
 void MatrixEsp::insert(int val, int row_, int col_){
-
-    if(row_ < 0 || row_ > row || col_ < 0 || col_ > row){
+    if((row_ < 0 || row_ > row-1 || col_ < 0 || col_ > col-1)){ //FALTA FAZER OS ESPAÇOS CERTOS
         return;
     }
+
     bool verify = false;
     for(size_t i = 0; i < matrixE[row_].listNode.size(); i++){
         if(matrixE[row_].listNode[i].index == col_){
@@ -64,17 +64,13 @@ void MatrixEsp::print(){
     }
 }
 
-void MatrixEsp::remove(int row_, int col_){
-    if((row_ < 0 || row_ > row || col_ < 0 || col_ > row)){ //FALTA FAZER OS ESPAÇOS CERTOS
+void MatrixEsp::remove(int row_,int col_){
+    if((row_ < 0 || row_ > row-1 || col_ < 0 || col_ > col-1)){ //FALTA FAZER OS ESPAÇOS CERTOS
         return;
     }
     for(size_t i = 0; i < matrixE[row_].listNode.size(); i++){
-        if(matrixE[row_].listNode[i].index == col_){ //size_t and int comparison
-            if(col_ == matrixE[row_].listNode.size()){
-                matrixE[row_].listNode.pop_back();
-            } else {
-                matrixE[row_].listNode.erase(matrixE[row_].listNode.begin()+(i));
-            }
+        if(matrixE[row_].listNode[i].index == col_){
+            matrixE[row_].listNode.erase(matrixE[row_].listNode.begin()+(i));\
             matrixE[row_].listNode.shrink_to_fit();
         }
     }
@@ -82,7 +78,7 @@ void MatrixEsp::remove(int row_, int col_){
 }
 
 int MatrixEsp::get(int row_, int col_){
-    if((row_ < 0 || row_ > row || col_ < 0 || col_ > row)){ //FALTA FAZER OS ESPAÇOS CERTOS
+    if((row_ < 0 || row_ > row-1 || col_ < 0 || col_ > col-1)){ 
         return 0;
     }
     for(size_t i = 0; i < matrixE[row_].listNode.size(); i++){
@@ -127,10 +123,10 @@ void MatrixEsp::sort(){
     }
 }
 
-void MatrixEsp::saveMatrix(){
+void MatrixEsp::saveMatrix(std::string dir){
     std::ofstream matrixFile;
+    matrixFile.open(dir);
 
-    matrixFile.open("save/matrix.txt");
     if(matrixFile.is_open()){
         std::cout << std::endl;
         matrixFile << row << "x" << col << std::endl;
@@ -146,9 +142,9 @@ void MatrixEsp::saveMatrix(){
     }
 }
 
-void MatrixEsp::loadMatrix(){
+void MatrixEsp::loadMatrix(std::string dir){
     std::ifstream matrixFile;
-    matrixFile.open("save/matrix.txt");
+    matrixFile.open(dir);
 
     if(matrixFile.is_open()){
         matrixE.clear();
@@ -173,12 +169,3 @@ void MatrixEsp::loadMatrix(){
         }while(!matrixFile.eof());
     }
 }
-
-bool MatrixEsp::posExists(int row_, int col_){
-    if(matrixE[row_].listNode[col].index == col_ && matrixE[row_].index == row_){
-        return true;
-    } else {
-        return false;
-    }
-}
-
